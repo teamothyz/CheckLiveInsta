@@ -3,9 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.7.34018.315
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CheckLiveInsta", "CheckLiveInsta\CheckLiveInsta.csproj", "{F27E2903-E4E1-49A5-A9C5-B4C451153C6F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CheckLiveInsta", "CheckLiveInsta\CheckLiveInsta.csproj", "{F27E2903-E4E1-49A5-A9C5-B4C451153C6F}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ChromeDriverLibrary", "ChromeDriverLibrary\ChromeDriverLibrary.csproj", "{E6AAA046-17A0-4639-9C8A-80FCC646FB4D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InstaChecker", "InstaChecker\InstaChecker.csproj", "{126F40E2-7629-4030-A120-83087BD4E0FC}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +23,10 @@ Global
 		{E6AAA046-17A0-4639-9C8A-80FCC646FB4D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E6AAA046-17A0-4639-9C8A-80FCC646FB4D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E6AAA046-17A0-4639-9C8A-80FCC646FB4D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{126F40E2-7629-4030-A120-83087BD4E0FC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{126F40E2-7629-4030-A120-83087BD4E0FC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{126F40E2-7629-4030-A120-83087BD4E0FC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{126F40E2-7629-4030-A120-83087BD4E0FC}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
