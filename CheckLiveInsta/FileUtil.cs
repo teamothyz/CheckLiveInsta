@@ -9,12 +9,12 @@ namespace CheckLiveInsta
         private static StreamWriter _errorWriter = null!;
         private static StreamWriter _generalWriter = null!;
 
-        public static void Init()
+        public static void Init(DateTime session)
         {
             var folder = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "output");
             if (!Directory.Exists(folder)) Directory.CreateDirectory(folder);
 
-            var subFolder = Path.Combine(folder, DateTime.Now.ToString("yyyyMMdd.HHmmss.fff"));
+            var subFolder = Path.Combine(folder, session.ToString("yyyyMMdd.HHmmss.fff"));
             if (!Directory.Exists(subFolder)) Directory.CreateDirectory(subFolder);
 
             _liveWriter = new StreamWriter(Path.Combine(subFolder, "live.txt"), true);
@@ -88,6 +88,40 @@ namespace CheckLiveInsta
             _liveWriter.Close();
             _errorWriter.Close();
             _generalWriter.Close();
+        }
+
+        public static List<Account> ReadAccount(string path)
+        {
+            var accounts = new List<Account>();
+            try
+            {
+                using var reader = new StreamReader(path);
+                var line = reader.ReadLine();
+                while (line != null)
+                {
+                    if (string.IsNullOrWhiteSpace(line))
+                    {
+                        line = reader.ReadLine();
+                        continue;
+                    }
+                    var data = line.Split("|");
+                    var account = new Account
+                    {
+                        Username = data[0],
+                        Password = data[1],
+                        CheckCount = 0,
+                        Status = LoginStatus.None,
+                        ErrorCount = 0,
+                    };
+                    accounts.Add(account);
+                    line = reader.ReadLine();
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.Error($"Read data error {ex}");
+            }
+            return accounts;
         }
 
         public static List<Tuple<string, string>> ReadData(string path)

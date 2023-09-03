@@ -1,52 +1,58 @@
 ﻿using CheckLiveInsta;
 using ChromeDriverLibrary;
-using Microsoft.Extensions.Configuration;
 using Serilog;
+using System.ComponentModel;
 
 namespace InstaChecker
 {
     public partial class FrmMain : Form
     {
-        private readonly CountModel _count = new();
-        private readonly List<Tuple<string, string>> _accounts = new();
+        private readonly CountModel _countModel = new();
+        private readonly List<Tuple<string, string>> _checkingAccounts = new();
+        private readonly BindingList<Account> _accounts = new();
+        private int _countCheck = 0;
+        private readonly object _countCheckLocker = new();
+        private DateTime _session = DateTime.Now;
+
         private CancellationTokenSource _cancelTokens = new();
 
         public FrmMain()
         {
             InitializeComponent();
 
-            TotalTxtBox.DataBindings.Add("Text", _count, "Total");
-            LiveTxtBox.DataBindings.Add("Text", _count, "Live");
-            DieTxtBox.DataBindings.Add("Text", _count, "Die");
-            ErrorTxtBox.DataBindings.Add("Text", _count, "Error");
-            ScannedTxtBox.DataBindings.Add("Text", _count, "Scanned");
+            TotalTxtBox.DataBindings.Add("Text", _countModel, "Total");
+            LiveTxtBox.DataBindings.Add("Text", _countModel, "Live");
+            DieTxtBox.DataBindings.Add("Text", _countModel, "Die");
+            ErrorTxtBox.DataBindings.Add("Text", _countModel, "Error");
+            ScannedTxtBox.DataBindings.Add("Text", _countModel, "Scanned");
 
-            var config = new ConfigurationBuilder().AddJsonFile("account.config.json").Build();
-            UsernameTxtBox.Text = config["Username"] ?? string.Empty;
-            PasswordTxtBox.Text = config["Password"] ?? string.Empty;
-            ActiveControl = kryptonLabel1;
+            AccountGridView.AutoGenerateColumns = false;
+            AccountGridView.DataSource = _accounts;
+            ActiveControl = kryptonLabel3;
         }
 
         private void InputBtn_Click(object sender, EventArgs e)
         {
-            ActiveControl = kryptonLabel1;
+            ActiveControl = kryptonLabel3;
             var dialog = new OpenFileDialog();
             var rs = dialog.ShowDialog(this);
             if (rs == DialogResult.OK)
             {
                 _ = Task.Run(() =>
                 {
-                    _accounts.Clear();
+                    _checkingAccounts.Clear();
                     var accounts = FileUtil.ReadData(dialog.FileName);
-                    _accounts.AddRange(accounts);
+                    _checkingAccounts.AddRange(accounts);
                     Invoke(() =>
                     {
                         MessageBox.Show(this, "Load dữ liệu thành công", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                        _count.Total = _accounts.Count;
-                        _count.Live = 0;
-                        _count.Die = 0;
-                        _count.Error = 0;
-                        _count.Scanned = 0;
+                        _countModel.Total = _checkingAccounts.Count;
+                        _countModel.Live = 0;
+                        _countModel.Die = 0;
+                        _countModel.Error = 0;
+                        _countModel.Scanned = 0;
+                        _countCheck = 0;
+                        _session = DateTime.Now;
                     });
                 });
             }
@@ -54,16 +60,16 @@ namespace InstaChecker
 
         private async void StartBtn_Click(object sender, EventArgs e)
         {
-            ActiveControl = kryptonLabel1;
+            ActiveControl = kryptonLabel3;
             try
             {
                 EnableBtn(false);
-                if (string.IsNullOrEmpty(UsernameTxtBox.Text) || string.IsNullOrEmpty(PasswordTxtBox.Text))
+                if (!_accounts.Any())
                 {
                     MessageBox.Show(this, "Vui lòng nhập tài khoản và mật khẩu", "Cảnh báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     return;
                 }
-                if (!_accounts.Any())
+                if (!_checkingAccounts.Any())
                 {
                     MessageBox.Show(this, "Vui lòng nhập danh sách tài khoản cần kiểm tra", "Cảnh báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     return;
@@ -71,26 +77,16 @@ namespace InstaChecker
 
                 Invoke(() =>
                 {
-                    _count.Live = 0;
-                    _count.Die = 0;
-                    _count.Error = 0;
-                    _count.Scanned = 0;
+                    _countModel.Live = 0;
+                    _countModel.Die = 0;
+                    _countModel.Error = 0;
+                    _countModel.Scanned = 0;
                 });
 
                 _cancelTokens = new();
-                await Task.Run(() =>
-                {
-                    var headers = InstaRequestService.LoginAndGetHeaders(UsernameTxtBox.Text, PasswordTxtBox.Text, _cancelTokens.Token);
-                    if (!headers.Any())
-                    {
-                        Invoke(() =>
-                        {
-                            MessageBox.Show(this, "Đăng nhập thất bại", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                            return;
-                        });
-                    }
-                    CheckAccountLoop(headers, _cancelTokens.Token);
-                });
+                _session = DateTime.Now;
+                _countCheck = 0;
+                await Task.Run(async () => await CheckAccountLoop(_cancelTokens.Token));
             }
             catch (Exception ex)
             {
@@ -104,66 +100,94 @@ namespace InstaChecker
             }
         }
 
-        public void CheckAccountLoop(Dictionary<string, string> headers, CancellationToken token)
+        public async Task CheckAccountLoop(CancellationToken token)
         {
             try
             {
-                var countLocker = new object();
-                var count = 0;
-                FileUtil.Init();
-
                 var tasks = new List<Task>();
+                foreach (var account in _accounts)
+                {
+                    if (account.Status != LoginStatus.Success)
+                    {
+                        var task = Task.Run(() => InstaRequestService.LoginAndGetHeaders(account, token), token);
+                        tasks.Add(task);
+                        if (tasks.Count == (int)LoginThreadUpDown.Value)
+                        {
+                            await Task.WhenAll(tasks);
+                            tasks.Clear();
+                            ChromeDriverInstance.KillAllChromes();
+                        }
+                    }
+                }
+
+                if (tasks.Any())
+                {
+                    await Task.WhenAll(tasks);
+                    tasks.Clear();
+                    ChromeDriverInstance.KillAllChromes();
+                }
+
+                FileUtil.Init(_session);
                 for (int i = 0; i < (int)ThreadUpDown.Value; i++)
                 {
                     tasks.Add(Task.Run(() =>
                     {
                         while (!token.IsCancellationRequested)
                         {
-                            Tuple<string, string> account = null!;
-                            lock (countLocker)
+                            Tuple<string, string> checkAccount = null!;
+                            Account? account = null;
+
+                            lock (_countCheckLocker)
                             {
-                                if (count >= _accounts.Count) return;
-                                account = _accounts[count];
-                                count++;
-                                if (account == null) return;
+                                if (_countCheck >= _checkingAccounts.Count) return;
+                                checkAccount = _checkingAccounts[_countCheck];
+
+                                account = _accounts.Where(a => a.CheckCount < 450 && a.Status == LoginStatus.Success).OrderBy(a => a.Username).FirstOrDefault();
+                                if (account != null) account.CheckCount++;
+                                else return;
+
+                                _countCheck++;
                             }
-                            var success = InstaRequestService.CheckAccount(account.Item1, headers, token).Result;
-                            FileUtil.WriteGeneral(account, success);
+
+                            if (checkAccount == null || account == null) return;
+                            var success = InstaRequestService.CheckAccount(checkAccount.Item1, account.Headers, token).Result;
+                            FileUtil.WriteGeneral(checkAccount, success);
 
                             switch (success)
                             {
                                 case true:
-                                    lock (_count.Locker)
+                                    lock (_countModel.Locker)
                                     {
                                         Invoke(() =>
                                         {
-                                            _count.Live++;
-                                            _count.Scanned++;
+                                            _countModel.Live++;
+                                            _countModel.Scanned++;
                                         });
                                     }
-                                    FileUtil.WriteLive(account);
+                                    FileUtil.WriteLive(checkAccount);
                                     break;
                                 case false:
-                                    lock (_count.Locker)
+                                    lock (_countModel.Locker)
                                     {
                                         Invoke(() =>
                                         {
-                                            _count.Die++;
-                                            _count.Scanned++;
+                                            _countModel.Die++;
+                                            _countModel.Scanned++;
                                         });
                                     }
-                                    FileUtil.WriteDie(account);
+                                    FileUtil.WriteDie(checkAccount);
                                     break;
                                 default:
-                                    lock (_count.Locker)
+                                    lock (_countModel.Locker)
                                     {
                                         Invoke(() =>
                                         {
-                                            _count.Error++;
-                                            _count.Scanned++;
+                                            _countModel.Error++;
+                                            _countModel.Scanned++;
+                                            account.ErrorCount++;
                                         });
                                     }
-                                    FileUtil.WriteError(account);
+                                    FileUtil.WriteError(checkAccount);
                                     break;
                             }
                             Thread.Sleep(100);
@@ -184,7 +208,7 @@ namespace InstaChecker
 
         private void StopBtn_Click(object sender, EventArgs e)
         {
-            ActiveControl = kryptonLabel1;
+            ActiveControl = kryptonLabel3;
             _cancelTokens.Cancel();
             ChromeDriverInstance.KillAllChromes();
         }
@@ -193,17 +217,73 @@ namespace InstaChecker
         {
             Invoke(() =>
             {
-                UsernameTxtBox.ReadOnly = !enable;
-                PasswordTxtBox.ReadOnly = !enable;
-
                 ThreadUpDown.Enabled = enable;
                 InputBtn.Enabled = enable;
                 StartBtn.Enabled = enable;
+                ContinueBtn.Enabled = enable;
+                LoginThreadUpDown.Enabled = enable;
+                ConfigAccountBtn.Enabled = enable;
+
                 StopBtn.Enabled = !enable;
 
                 StatusTxtBox.Text = enable ? "Đã dừng" : "Đang chạy";
                 StatusTxtBox.StateCommon.Back.Color1 = enable ? Color.Red : Color.Green;
             });
+        }
+
+        private async void ContinueBtn_Click(object sender, EventArgs e)
+        {
+            ActiveControl = kryptonLabel3;
+            try
+            {
+                EnableBtn(false);
+                if (!_accounts.Any())
+                {
+                    MessageBox.Show(this, "Vui lòng nhập tài khoản và mật khẩu", "Cảnh báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return;
+                }
+                if (!_checkingAccounts.Any())
+                {
+                    MessageBox.Show(this, "Vui lòng nhập danh sách tài khoản cần kiểm tra", "Cảnh báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return;
+                }
+
+                _cancelTokens = new();
+                await Task.Run(() => CheckAccountLoop(_cancelTokens.Token));
+            }
+            catch (Exception ex)
+            {
+                Invoke(() => MessageBox.Show(this, $"Có lỗi xảy ra: {ex.Message}", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error));
+                Log.Error($"Start error: {ex}");
+            }
+            finally
+            {
+                Invoke(() => MessageBox.Show(this, "Chương trình đã dừng lại", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information));
+                EnableBtn(true);
+            }
+        }
+
+        private void ConfigAccountBtn_Click(object sender, EventArgs e)
+        {
+            ActiveControl = kryptonLabel3;
+            var dialog = new OpenFileDialog();
+            var rs = dialog.ShowDialog(this);
+            if (rs == DialogResult.OK)
+            {
+                _ = Task.Run(() =>
+                {
+                    Invoke(() => _accounts.Clear());
+                    var accounts = FileUtil.ReadAccount(dialog.FileName);
+                    foreach (var account in accounts.OrderBy(a => a.Username))
+                    {
+                        Invoke(() => _accounts.Add(account));
+                    }
+                    Invoke(() =>
+                    {
+                        MessageBox.Show(this, "Load accounts thành công", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    });
+                });
+            }
         }
     }
 }

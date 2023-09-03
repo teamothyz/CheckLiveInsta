@@ -1,4 +1,6 @@
 ﻿using ChromeDriverLibrary;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using Serilog;
 using System.Net;
 
@@ -6,13 +8,11 @@ namespace CheckLiveInsta
 {
     public class InstaRequestService
     {
-        public static Dictionary<string, string> LoginAndGetHeaders(string username, string password, CancellationToken token)
+        public static void LoginAndGetHeaders(Account account, CancellationToken token)
         {
-            Dictionary<string, string> headers = new();
             MyChromeDriver instace = null!;
             try
             {
-                var isLoggedIn = false;
                 instace = ChromeDriverInstance.GetInstance(0, 0, isMaximize: true, isHeadless: true, disableImg: false, keepOneWindow: true, privateMode: false);
 
                 var networkManager = new NetWorkManagerCustom(instace.Driver);
@@ -20,43 +20,44 @@ namespace CheckLiveInsta
                 {
                     if (e.RequestUrl == $"https://www.instagram.com/api/v1/users/web_profile_info/?username=DangHuong_73825")
                     {
+                        account.Headers.Clear();
                         foreach (var header in e.RequestHeaders)
                         {
-                            headers.Add(header.Key, header.Value);
+                            account.Headers.Add(header.Key, header.Value);
                         }
-                        isLoggedIn = true;
+                        account.Status = LoginStatus.Success;
                     }
                 };
 
                 instace.Driver.GoToUrl("https://www.instagram.com/");
                 var usernameElm = instace.Driver.FindElement(@"[name=""username""]", 60, token);
-                instace.Driver.Sendkeys(usernameElm, username, true, 60, token);
+                instace.Driver.Sendkeys(usernameElm, account.Username, true, 60, token);
                 Thread.Sleep(1000);
 
                 var passwordElm = instace.Driver.FindElement(@"[name=""password""]", 60, token);
-                instace.Driver.Sendkeys(passwordElm, password, true, 60, token);
+                instace.Driver.Sendkeys(passwordElm, account.Password, true, 60, token);
                 Thread.Sleep(1000);
 
                 instace.Driver.Click(@"#loginForm button[type=""submit""]", 60, token);
-                _ = instace.Driver.FindElement($@"img[alt*=""{username.ToLower()}""]", 60, token);
+                _ = instace.Driver.FindElement($@"img[alt*=""{account.Username.ToLower()}""]", 60, token);
 
                 networkManager.StartMonitoring().Wait(token);
                 instace.Driver.Url = "https://www.instagram.com/DangHuong_73825";
-                var endTime = DateTime.Now.AddMinutes(2);
-                while (!isLoggedIn && DateTime.Now < endTime)
+                var endTime = DateTime.Now.AddMinutes(1);
+                while (account.Status != LoginStatus.Success && DateTime.Now < endTime)
                 {
                     Thread.Sleep(1000);
                 }
             }
             catch (Exception ex)
             {
-                Log.Error($"Login account {username} error: {ex}");
+                Log.Error($"Login account {account.Username} error: {ex}");
+                account.Status = LoginStatus.Failed;
             }
             finally
             {
-                instace.Close();
+                instace?.Close();
             }
-            return headers;
         }
 
         public static async Task<bool?> CheckAccount(string username, Dictionary<string, string> headers, CancellationToken token)
@@ -69,12 +70,26 @@ namespace CheckLiveInsta
                     client.DefaultRequestHeaders.Add(header.Key, header.Value);
                 }
                 var res = await client.GetAsync($"https://www.instagram.com/api/v1/users/web_profile_info/?username={username}", token);
-                return res.StatusCode switch
+                if (res.StatusCode == HttpStatusCode.OK)
                 {
-                    HttpStatusCode.OK => true,
-                    HttpStatusCode.NotFound => false,
-                    _ => null
-                };
+                    try
+                    {
+                        var content = await res.Content.ReadAsStringAsync(token);
+                        var status = JsonConvert.DeserializeObject<JObject>(content)?["status"]?.ToString();
+                        return status == "ok";
+                    }
+                    catch (Exception ex)
+                    {
+                        Log.Error($"Scan {username} error: {ex.Message}");
+                        return null;
+                    }
+                }
+                else if (res.StatusCode == HttpStatusCode.NotFound) return false;
+                else
+                {
+                    Log.Error($"Scan {username} error: {res.StatusCode}");
+                    return null;
+                }
             }
             catch (Exception ex)
             {

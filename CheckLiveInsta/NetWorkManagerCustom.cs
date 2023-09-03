@@ -80,46 +80,58 @@ namespace CheckLiveInsta
 
         private async void OnAuthRequired(object? sender, AuthRequiredEventArgs e)
         {
-            _ = e.RequestId;
-            var uri = new Uri(e.Uri);
-            bool successfullyAuthenticated = false;
-            foreach (NetworkAuthenticationHandler authenticationHandler in authenticationHandlers)
+            try
             {
-                if (authenticationHandler.UriMatcher(uri))
+                _ = e.RequestId;
+                var uri = new Uri(e.Uri);
+                bool successfullyAuthenticated = false;
+                foreach (NetworkAuthenticationHandler authenticationHandler in authenticationHandlers)
                 {
-                    PasswordCredentials credentials = authenticationHandler.Credentials as PasswordCredentials ?? new PasswordCredentials();
-                    await session.Value.Domains.Network.ContinueWithAuth(e.RequestId, credentials.UserName, credentials.Password);
-                    successfullyAuthenticated = true;
-                    break;
+                    if (authenticationHandler.UriMatcher(uri))
+                    {
+                        PasswordCredentials credentials = authenticationHandler.Credentials as PasswordCredentials ?? new PasswordCredentials();
+                        await session.Value.Domains.Network.ContinueWithAuth(e.RequestId, credentials.UserName, credentials.Password);
+                        successfullyAuthenticated = true;
+                        break;
+                    }
+                }
+
+                if (!successfullyAuthenticated)
+                {
+                    await session.Value.Domains.Network.CancelAuth(e.RequestId);
                 }
             }
-
-            if (!successfullyAuthenticated)
-            {
-                await session.Value.Domains.Network.CancelAuth(e.RequestId);
-            }
+            catch { }
         }
 
         private async void OnRequestPaused(object? sender, RequestPausedEventArgs e)
         {
-            if (NetworkRequestSent != null)
+            try
             {
-                NetworkRequestSent(this, new NetworkRequestSentEventArgs(e.RequestData));
+                if (NetworkRequestSent != null)
+                {
+                    NetworkRequestSent(this, new NetworkRequestSentEventArgs(e.RequestData));
+                }
+                await session.Value.Domains.Network.ContinueRequestWithoutModification(e.RequestData);
             }
-            await session.Value.Domains.Network.ContinueRequestWithoutModification(e.RequestData);
+            catch { }
         }
 
         private async void OnResponsePaused(object? sender, ResponsePausedEventArgs e)
         {
-            if (e.ResponseData.Headers.Count > 0)
+            try
             {
-                await session.Value.Domains.Network.AddResponseBody(e.ResponseData);
+                if (e.ResponseData.Headers.Count > 0)
+                {
+                    await session.Value.Domains.Network.AddResponseBody(e.ResponseData);
+                }
+                if (NetworkResponseReceived != null)
+                {
+                    NetworkResponseReceived(this, new NetworkResponseReceivedEventArgs(e.ResponseData));
+                }
+                await session.Value.Domains.Network.ContinueResponseWithoutModification(e.ResponseData);
             }
-            if (NetworkResponseReceived != null)
-            {
-                NetworkResponseReceived(this, new NetworkResponseReceivedEventArgs(e.ResponseData));
-            }
-            await session.Value.Domains.Network.ContinueResponseWithoutModification(e.ResponseData);
+            catch { }
         }
     }
 }

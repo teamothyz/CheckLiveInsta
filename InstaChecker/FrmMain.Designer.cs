@@ -28,9 +28,12 @@
         /// </summary>
         private void InitializeComponent()
         {
+            DataGridViewCellStyle dataGridViewCellStyle1 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle2 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle3 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle4 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle5 = new DataGridViewCellStyle();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FrmMain));
-            kryptonLabel1 = new Krypton.Toolkit.KryptonLabel();
-            kryptonLabel2 = new Krypton.Toolkit.KryptonLabel();
             kryptonLabel3 = new Krypton.Toolkit.KryptonLabel();
             kryptonLabel4 = new Krypton.Toolkit.KryptonLabel();
             kryptonLabel5 = new Krypton.Toolkit.KryptonLabel();
@@ -38,8 +41,6 @@
             kryptonLabel7 = new Krypton.Toolkit.KryptonLabel();
             kryptonLabel8 = new Krypton.Toolkit.KryptonLabel();
             kryptonLabel9 = new Krypton.Toolkit.KryptonLabel();
-            UsernameTxtBox = new Krypton.Toolkit.KryptonTextBox();
-            PasswordTxtBox = new Krypton.Toolkit.KryptonTextBox();
             TotalTxtBox = new Krypton.Toolkit.KryptonTextBox();
             LiveTxtBox = new Krypton.Toolkit.KryptonTextBox();
             DieTxtBox = new Krypton.Toolkit.KryptonTextBox();
@@ -50,29 +51,22 @@
             InputBtn = new Krypton.Toolkit.KryptonButton();
             StartBtn = new Krypton.Toolkit.KryptonButton();
             StopBtn = new Krypton.Toolkit.KryptonButton();
+            ContinueBtn = new Krypton.Toolkit.KryptonButton();
+            AccountGridView = new Krypton.Toolkit.KryptonDataGridView();
+            Username = new Krypton.Toolkit.KryptonDataGridViewTextBoxColumn();
+            Password = new Krypton.Toolkit.KryptonDataGridViewTextBoxColumn();
+            CheckCount = new Krypton.Toolkit.KryptonDataGridViewTextBoxColumn();
+            ErrorCount = new Krypton.Toolkit.KryptonDataGridViewTextBoxColumn();
+            Status = new Krypton.Toolkit.KryptonDataGridViewTextBoxColumn();
+            ConfigAccountBtn = new Krypton.Toolkit.KryptonButton();
+            LoginThreadUpDown = new Krypton.Toolkit.KryptonNumericUpDown();
+            kryptonLabel1 = new Krypton.Toolkit.KryptonLabel();
+            ((System.ComponentModel.ISupportInitialize)AccountGridView).BeginInit();
             SuspendLayout();
-            // 
-            // kryptonLabel1
-            // 
-            kryptonLabel1.Location = new Point(12, 28);
-            kryptonLabel1.Name = "kryptonLabel1";
-            kryptonLabel1.Size = new Size(65, 19);
-            kryptonLabel1.StateCommon.ShortText.Font = new Font("Segoe UI", 8.25F, FontStyle.Bold, GraphicsUnit.Point);
-            kryptonLabel1.TabIndex = 0;
-            kryptonLabel1.Values.Text = "Tài khoản:";
-            // 
-            // kryptonLabel2
-            // 
-            kryptonLabel2.Location = new Point(12, 63);
-            kryptonLabel2.Name = "kryptonLabel2";
-            kryptonLabel2.Size = new Size(64, 19);
-            kryptonLabel2.StateCommon.ShortText.Font = new Font("Segoe UI", 8.25F, FontStyle.Bold, GraphicsUnit.Point);
-            kryptonLabel2.TabIndex = 1;
-            kryptonLabel2.Values.Text = "Mật khẩu:";
             // 
             // kryptonLabel3
             // 
-            kryptonLabel3.Location = new Point(12, 99);
+            kryptonLabel3.Location = new Point(651, 12);
             kryptonLabel3.Name = "kryptonLabel3";
             kryptonLabel3.Size = new Size(61, 19);
             kryptonLabel3.StateCommon.ShortText.Font = new Font("Segoe UI", 8.25F, FontStyle.Bold, GraphicsUnit.Point);
@@ -81,7 +75,7 @@
             // 
             // kryptonLabel4
             // 
-            kryptonLabel4.Location = new Point(12, 134);
+            kryptonLabel4.Location = new Point(651, 47);
             kryptonLabel4.Name = "kryptonLabel4";
             kryptonLabel4.Size = new Size(41, 19);
             kryptonLabel4.StateCommon.ShortText.Font = new Font("Segoe UI", 8.25F, FontStyle.Bold, GraphicsUnit.Point);
@@ -90,7 +84,7 @@
             // 
             // kryptonLabel5
             // 
-            kryptonLabel5.Location = new Point(12, 169);
+            kryptonLabel5.Location = new Point(651, 82);
             kryptonLabel5.Name = "kryptonLabel5";
             kryptonLabel5.Size = new Size(35, 19);
             kryptonLabel5.StateCommon.ShortText.Font = new Font("Segoe UI", 8.25F, FontStyle.Bold, GraphicsUnit.Point);
@@ -99,7 +93,7 @@
             // 
             // kryptonLabel6
             // 
-            kryptonLabel6.Location = new Point(12, 208);
+            kryptonLabel6.Location = new Point(651, 121);
             kryptonLabel6.Name = "kryptonLabel6";
             kryptonLabel6.Size = new Size(31, 19);
             kryptonLabel6.StateCommon.ShortText.Font = new Font("Segoe UI", 8.25F, FontStyle.Bold, GraphicsUnit.Point);
@@ -108,7 +102,7 @@
             // 
             // kryptonLabel7
             // 
-            kryptonLabel7.Location = new Point(12, 243);
+            kryptonLabel7.Location = new Point(651, 156);
             kryptonLabel7.Name = "kryptonLabel7";
             kryptonLabel7.Size = new Size(29, 19);
             kryptonLabel7.StateCommon.ShortText.Font = new Font("Segoe UI", 8.25F, FontStyle.Bold, GraphicsUnit.Point);
@@ -117,7 +111,7 @@
             // 
             // kryptonLabel8
             // 
-            kryptonLabel8.Location = new Point(12, 282);
+            kryptonLabel8.Location = new Point(651, 195);
             kryptonLabel8.Name = "kryptonLabel8";
             kryptonLabel8.Size = new Size(61, 19);
             kryptonLabel8.StateCommon.ShortText.Font = new Font("Segoe UI", 8.25F, FontStyle.Bold, GraphicsUnit.Point);
@@ -126,30 +120,16 @@
             // 
             // kryptonLabel9
             // 
-            kryptonLabel9.Location = new Point(12, 323);
+            kryptonLabel9.Location = new Point(651, 236);
             kryptonLabel9.Name = "kryptonLabel9";
             kryptonLabel9.Size = new Size(68, 19);
             kryptonLabel9.StateCommon.ShortText.Font = new Font("Segoe UI", 8.25F, FontStyle.Bold, GraphicsUnit.Point);
             kryptonLabel9.TabIndex = 8;
             kryptonLabel9.Values.Text = "Trạng thái:";
             // 
-            // UsernameTxtBox
-            // 
-            UsernameTxtBox.Location = new Point(92, 24);
-            UsernameTxtBox.Name = "UsernameTxtBox";
-            UsernameTxtBox.Size = new Size(267, 23);
-            UsernameTxtBox.TabIndex = 9;
-            // 
-            // PasswordTxtBox
-            // 
-            PasswordTxtBox.Location = new Point(92, 59);
-            PasswordTxtBox.Name = "PasswordTxtBox";
-            PasswordTxtBox.Size = new Size(267, 23);
-            PasswordTxtBox.TabIndex = 10;
-            // 
             // TotalTxtBox
             // 
-            TotalTxtBox.Location = new Point(92, 130);
+            TotalTxtBox.Location = new Point(731, 43);
             TotalTxtBox.Name = "TotalTxtBox";
             TotalTxtBox.ReadOnly = true;
             TotalTxtBox.Size = new Size(104, 22);
@@ -161,7 +141,7 @@
             // 
             // LiveTxtBox
             // 
-            LiveTxtBox.Location = new Point(92, 166);
+            LiveTxtBox.Location = new Point(731, 79);
             LiveTxtBox.Name = "LiveTxtBox";
             LiveTxtBox.ReadOnly = true;
             LiveTxtBox.Size = new Size(104, 22);
@@ -173,7 +153,7 @@
             // 
             // DieTxtBox
             // 
-            DieTxtBox.Location = new Point(92, 205);
+            DieTxtBox.Location = new Point(731, 118);
             DieTxtBox.Name = "DieTxtBox";
             DieTxtBox.ReadOnly = true;
             DieTxtBox.Size = new Size(104, 22);
@@ -185,7 +165,7 @@
             // 
             // ErrorTxtBox
             // 
-            ErrorTxtBox.Location = new Point(92, 240);
+            ErrorTxtBox.Location = new Point(731, 153);
             ErrorTxtBox.Name = "ErrorTxtBox";
             ErrorTxtBox.ReadOnly = true;
             ErrorTxtBox.Size = new Size(104, 22);
@@ -197,7 +177,7 @@
             // 
             // ScannedTxtBox
             // 
-            ScannedTxtBox.Location = new Point(92, 279);
+            ScannedTxtBox.Location = new Point(731, 192);
             ScannedTxtBox.Name = "ScannedTxtBox";
             ScannedTxtBox.ReadOnly = true;
             ScannedTxtBox.Size = new Size(104, 22);
@@ -209,7 +189,7 @@
             // 
             // StatusTxtBox
             // 
-            StatusTxtBox.Location = new Point(92, 320);
+            StatusTxtBox.Location = new Point(731, 233);
             StatusTxtBox.Name = "StatusTxtBox";
             StatusTxtBox.ReadOnly = true;
             StatusTxtBox.Size = new Size(104, 22);
@@ -221,7 +201,7 @@
             // 
             // ThreadUpDown
             // 
-            ThreadUpDown.Location = new Point(92, 96);
+            ThreadUpDown.Location = new Point(731, 9);
             ThreadUpDown.Maximum = new decimal(new int[] { 10000000, 0, 0, 0 });
             ThreadUpDown.Minimum = new decimal(new int[] { 1, 0, 0, 0 });
             ThreadUpDown.Name = "ThreadUpDown";
@@ -233,9 +213,9 @@
             // InputBtn
             // 
             InputBtn.CornerRoundingRadius = -1F;
-            InputBtn.Location = new Point(226, 96);
+            InputBtn.Location = new Point(356, 279);
             InputBtn.Name = "InputBtn";
-            InputBtn.Size = new Size(133, 25);
+            InputBtn.Size = new Size(107, 25);
             InputBtn.StateCommon.Back.Color1 = Color.Cyan;
             InputBtn.StateCommon.Back.Color2 = Color.Cyan;
             InputBtn.StateCommon.Content.ShortText.Font = new Font("Segoe UI", 8.25F, FontStyle.Bold, GraphicsUnit.Point);
@@ -246,23 +226,23 @@
             // StartBtn
             // 
             StartBtn.CornerRoundingRadius = -1F;
-            StartBtn.Location = new Point(226, 147);
+            StartBtn.Location = new Point(12, 326);
             StartBtn.Name = "StartBtn";
-            StartBtn.Size = new Size(133, 25);
+            StartBtn.Size = new Size(109, 25);
             StartBtn.StateCommon.Back.Color1 = Color.LawnGreen;
             StartBtn.StateCommon.Back.Color2 = Color.LawnGreen;
             StartBtn.StateCommon.Content.ShortText.Font = new Font("Segoe UI", 8.25F, FontStyle.Bold, GraphicsUnit.Point);
             StartBtn.TabIndex = 19;
-            StartBtn.Values.Text = "Bắt đầu";
+            StartBtn.Values.Text = "Check từ đầu";
             StartBtn.Click += StartBtn_Click;
             // 
             // StopBtn
             // 
             StopBtn.CornerRoundingRadius = -1F;
             StopBtn.Enabled = false;
-            StopBtn.Location = new Point(226, 199);
+            StopBtn.Location = new Point(356, 326);
             StopBtn.Name = "StopBtn";
-            StopBtn.Size = new Size(133, 25);
+            StopBtn.Size = new Size(107, 25);
             StopBtn.StateCommon.Back.Color1 = Color.FromArgb(255, 128, 128);
             StopBtn.StateCommon.Back.Color2 = Color.FromArgb(255, 128, 128);
             StopBtn.StateCommon.Content.ShortText.Font = new Font("Segoe UI", 8.25F, FontStyle.Bold, GraphicsUnit.Point);
@@ -270,11 +250,124 @@
             StopBtn.Values.Text = "Dừng lại";
             StopBtn.Click += StopBtn_Click;
             // 
+            // ContinueBtn
+            // 
+            ContinueBtn.CornerRoundingRadius = -1F;
+            ContinueBtn.Location = new Point(186, 326);
+            ContinueBtn.Name = "ContinueBtn";
+            ContinueBtn.Size = new Size(110, 25);
+            ContinueBtn.StateCommon.Back.Color1 = Color.LawnGreen;
+            ContinueBtn.StateCommon.Back.Color2 = Color.LawnGreen;
+            ContinueBtn.StateCommon.Content.ShortText.Font = new Font("Segoe UI", 8.25F, FontStyle.Bold, GraphicsUnit.Point);
+            ContinueBtn.TabIndex = 21;
+            ContinueBtn.Values.Text = "Check tiếp";
+            ContinueBtn.Click += ContinueBtn_Click;
+            // 
+            // AccountGridView
+            // 
+            AccountGridView.AllowUserToAddRows = false;
+            AccountGridView.AllowUserToDeleteRows = false;
+            AccountGridView.AllowUserToResizeRows = false;
+            AccountGridView.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+            AccountGridView.ColumnHeadersHeight = 28;
+            AccountGridView.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
+            AccountGridView.Columns.AddRange(new DataGridViewColumn[] { Username, Password, CheckCount, ErrorCount, Status });
+            AccountGridView.Location = new Point(12, 12);
+            AccountGridView.Name = "AccountGridView";
+            AccountGridView.RowHeadersVisible = false;
+            AccountGridView.RowTemplate.Height = 25;
+            AccountGridView.SelectionMode = DataGridViewSelectionMode.CellSelect;
+            AccountGridView.Size = new Size(619, 243);
+            AccountGridView.TabIndex = 22;
+            // 
+            // Username
+            // 
+            Username.DataPropertyName = "Username";
+            Username.DefaultCellStyle = dataGridViewCellStyle1;
+            Username.HeaderText = "Tài khoản";
+            Username.Name = "Username";
+            Username.ReadOnly = true;
+            Username.Width = 124;
+            // 
+            // Password
+            // 
+            Password.DataPropertyName = "Password";
+            Password.DefaultCellStyle = dataGridViewCellStyle2;
+            Password.HeaderText = "Mật khẩu";
+            Password.Name = "Password";
+            Password.ReadOnly = true;
+            Password.Width = 123;
+            // 
+            // CheckCount
+            // 
+            CheckCount.DataPropertyName = "CheckCount";
+            CheckCount.DefaultCellStyle = dataGridViewCellStyle3;
+            CheckCount.HeaderText = "Đã check";
+            CheckCount.Name = "CheckCount";
+            CheckCount.ReadOnly = true;
+            CheckCount.Width = 124;
+            // 
+            // ErrorCount
+            // 
+            ErrorCount.DataPropertyName = "ErrorCount";
+            ErrorCount.DefaultCellStyle = dataGridViewCellStyle4;
+            ErrorCount.HeaderText = "Check lỗi";
+            ErrorCount.Name = "ErrorCount";
+            ErrorCount.ReadOnly = true;
+            ErrorCount.Width = 123;
+            // 
+            // Status
+            // 
+            Status.DataPropertyName = "Status";
+            Status.DefaultCellStyle = dataGridViewCellStyle5;
+            Status.HeaderText = "Trạng thái";
+            Status.Name = "Status";
+            Status.ReadOnly = true;
+            Status.Width = 124;
+            // 
+            // ConfigAccountBtn
+            // 
+            ConfigAccountBtn.CornerRoundingRadius = -1F;
+            ConfigAccountBtn.Location = new Point(12, 279);
+            ConfigAccountBtn.Name = "ConfigAccountBtn";
+            ConfigAccountBtn.Size = new Size(106, 25);
+            ConfigAccountBtn.StateCommon.Back.Color1 = Color.Cyan;
+            ConfigAccountBtn.StateCommon.Back.Color2 = Color.Cyan;
+            ConfigAccountBtn.StateCommon.Content.ShortText.Font = new Font("Segoe UI", 8.25F, FontStyle.Bold, GraphicsUnit.Point);
+            ConfigAccountBtn.TabIndex = 23;
+            ConfigAccountBtn.Values.Text = "Nhập account";
+            ConfigAccountBtn.Click += ConfigAccountBtn_Click;
+            // 
+            // LoginThreadUpDown
+            // 
+            LoginThreadUpDown.Location = new Point(221, 283);
+            LoginThreadUpDown.Maximum = new decimal(new int[] { 10000000, 0, 0, 0 });
+            LoginThreadUpDown.Minimum = new decimal(new int[] { 1, 0, 0, 0 });
+            LoginThreadUpDown.Name = "LoginThreadUpDown";
+            LoginThreadUpDown.Size = new Size(104, 21);
+            LoginThreadUpDown.StateCommon.Content.Font = new Font("Segoe UI", 8.25F, FontStyle.Bold, GraphicsUnit.Point);
+            LoginThreadUpDown.TabIndex = 25;
+            LoginThreadUpDown.Value = new decimal(new int[] { 10, 0, 0, 0 });
+            // 
+            // kryptonLabel1
+            // 
+            kryptonLabel1.Location = new Point(124, 285);
+            kryptonLabel1.Name = "kryptonLabel1";
+            kryptonLabel1.Size = new Size(91, 19);
+            kryptonLabel1.StateCommon.ShortText.Font = new Font("Segoe UI", 8.25F, FontStyle.Bold, GraphicsUnit.Point);
+            kryptonLabel1.TabIndex = 24;
+            kryptonLabel1.Values.Text = "Số luồng login:";
+            // 
             // FrmMain
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(371, 364);
+            ClientSize = new Size(850, 374);
+            Controls.Add(LoginThreadUpDown);
+            Controls.Add(kryptonLabel1);
+            Controls.Add(ConfigAccountBtn);
+            Controls.Add(AccountGridView);
+            Controls.Add(ContinueBtn);
             Controls.Add(StopBtn);
             Controls.Add(StartBtn);
             Controls.Add(InputBtn);
@@ -285,8 +378,6 @@
             Controls.Add(DieTxtBox);
             Controls.Add(LiveTxtBox);
             Controls.Add(TotalTxtBox);
-            Controls.Add(PasswordTxtBox);
-            Controls.Add(UsernameTxtBox);
             Controls.Add(kryptonLabel9);
             Controls.Add(kryptonLabel8);
             Controls.Add(kryptonLabel7);
@@ -294,21 +385,16 @@
             Controls.Add(kryptonLabel5);
             Controls.Add(kryptonLabel4);
             Controls.Add(kryptonLabel3);
-            Controls.Add(kryptonLabel2);
-            Controls.Add(kryptonLabel1);
             Icon = (Icon)resources.GetObject("$this.Icon");
-            MaximumSize = new Size(387, 403);
-            MinimumSize = new Size(387, 403);
+            MaximizeBox = false;
             Name = "FrmMain";
             Text = "Instagram Checker";
+            ((System.ComponentModel.ISupportInitialize)AccountGridView).EndInit();
             ResumeLayout(false);
             PerformLayout();
         }
 
         #endregion
-
-        private Krypton.Toolkit.KryptonLabel kryptonLabel1;
-        private Krypton.Toolkit.KryptonLabel kryptonLabel2;
         private Krypton.Toolkit.KryptonLabel kryptonLabel3;
         private Krypton.Toolkit.KryptonLabel kryptonLabel4;
         private Krypton.Toolkit.KryptonLabel kryptonLabel5;
@@ -316,8 +402,6 @@
         private Krypton.Toolkit.KryptonLabel kryptonLabel7;
         private Krypton.Toolkit.KryptonLabel kryptonLabel8;
         private Krypton.Toolkit.KryptonLabel kryptonLabel9;
-        private Krypton.Toolkit.KryptonTextBox UsernameTxtBox;
-        private Krypton.Toolkit.KryptonTextBox PasswordTxtBox;
         private Krypton.Toolkit.KryptonTextBox TotalTxtBox;
         private Krypton.Toolkit.KryptonTextBox LiveTxtBox;
         private Krypton.Toolkit.KryptonTextBox DieTxtBox;
@@ -328,5 +412,15 @@
         private Krypton.Toolkit.KryptonButton InputBtn;
         private Krypton.Toolkit.KryptonButton StartBtn;
         private Krypton.Toolkit.KryptonButton StopBtn;
+        private Krypton.Toolkit.KryptonButton ContinueBtn;
+        private Krypton.Toolkit.KryptonDataGridView AccountGridView;
+        private Krypton.Toolkit.KryptonDataGridViewTextBoxColumn Username;
+        private Krypton.Toolkit.KryptonDataGridViewTextBoxColumn Password;
+        private Krypton.Toolkit.KryptonDataGridViewTextBoxColumn CheckCount;
+        private Krypton.Toolkit.KryptonDataGridViewTextBoxColumn ErrorCount;
+        private Krypton.Toolkit.KryptonDataGridViewTextBoxColumn Status;
+        private Krypton.Toolkit.KryptonButton ConfigAccountBtn;
+        private Krypton.Toolkit.KryptonNumericUpDown LoginThreadUpDown;
+        private Krypton.Toolkit.KryptonLabel kryptonLabel1;
     }
 }
