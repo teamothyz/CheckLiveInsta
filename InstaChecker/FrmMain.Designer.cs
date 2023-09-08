@@ -66,6 +66,7 @@
             // 
             // kryptonLabel3
             // 
+            kryptonLabel3.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             kryptonLabel3.Location = new Point(651, 12);
             kryptonLabel3.Name = "kryptonLabel3";
             kryptonLabel3.Size = new Size(61, 19);
@@ -75,6 +76,7 @@
             // 
             // kryptonLabel4
             // 
+            kryptonLabel4.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             kryptonLabel4.Location = new Point(651, 47);
             kryptonLabel4.Name = "kryptonLabel4";
             kryptonLabel4.Size = new Size(41, 19);
@@ -84,6 +86,7 @@
             // 
             // kryptonLabel5
             // 
+            kryptonLabel5.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             kryptonLabel5.Location = new Point(651, 82);
             kryptonLabel5.Name = "kryptonLabel5";
             kryptonLabel5.Size = new Size(35, 19);
@@ -93,6 +96,7 @@
             // 
             // kryptonLabel6
             // 
+            kryptonLabel6.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             kryptonLabel6.Location = new Point(651, 121);
             kryptonLabel6.Name = "kryptonLabel6";
             kryptonLabel6.Size = new Size(31, 19);
@@ -102,6 +106,7 @@
             // 
             // kryptonLabel7
             // 
+            kryptonLabel7.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             kryptonLabel7.Location = new Point(651, 156);
             kryptonLabel7.Name = "kryptonLabel7";
             kryptonLabel7.Size = new Size(29, 19);
@@ -111,6 +116,7 @@
             // 
             // kryptonLabel8
             // 
+            kryptonLabel8.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             kryptonLabel8.Location = new Point(651, 195);
             kryptonLabel8.Name = "kryptonLabel8";
             kryptonLabel8.Size = new Size(61, 19);
@@ -120,6 +126,7 @@
             // 
             // kryptonLabel9
             // 
+            kryptonLabel9.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             kryptonLabel9.Location = new Point(651, 236);
             kryptonLabel9.Name = "kryptonLabel9";
             kryptonLabel9.Size = new Size(68, 19);
@@ -129,6 +136,7 @@
             // 
             // TotalTxtBox
             // 
+            TotalTxtBox.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             TotalTxtBox.Location = new Point(731, 43);
             TotalTxtBox.Name = "TotalTxtBox";
             TotalTxtBox.ReadOnly = true;
@@ -141,6 +149,7 @@
             // 
             // LiveTxtBox
             // 
+            LiveTxtBox.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             LiveTxtBox.Location = new Point(731, 79);
             LiveTxtBox.Name = "LiveTxtBox";
             LiveTxtBox.ReadOnly = true;
@@ -153,6 +162,7 @@
             // 
             // DieTxtBox
             // 
+            DieTxtBox.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             DieTxtBox.Location = new Point(731, 118);
             DieTxtBox.Name = "DieTxtBox";
             DieTxtBox.ReadOnly = true;
@@ -165,6 +175,7 @@
             // 
             // ErrorTxtBox
             // 
+            ErrorTxtBox.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             ErrorTxtBox.Location = new Point(731, 153);
             ErrorTxtBox.Name = "ErrorTxtBox";
             ErrorTxtBox.ReadOnly = true;
@@ -177,6 +188,7 @@
             // 
             // ScannedTxtBox
             // 
+            ScannedTxtBox.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             ScannedTxtBox.Location = new Point(731, 192);
             ScannedTxtBox.Name = "ScannedTxtBox";
             ScannedTxtBox.ReadOnly = true;
@@ -189,6 +201,7 @@
             // 
             // StatusTxtBox
             // 
+            StatusTxtBox.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             StatusTxtBox.Location = new Point(731, 233);
             StatusTxtBox.Name = "StatusTxtBox";
             StatusTxtBox.ReadOnly = true;
@@ -201,6 +214,7 @@
             // 
             // ThreadUpDown
             // 
+            ThreadUpDown.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             ThreadUpDown.Location = new Point(731, 9);
             ThreadUpDown.Maximum = new decimal(new int[] { 10000000, 0, 0, 0 });
             ThreadUpDown.Minimum = new decimal(new int[] { 1, 0, 0, 0 });
@@ -212,6 +226,7 @@
             // 
             // InputBtn
             // 
+            InputBtn.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
             InputBtn.CornerRoundingRadius = -1F;
             InputBtn.Location = new Point(356, 279);
             InputBtn.Name = "InputBtn";
@@ -225,6 +240,7 @@
             // 
             // StartBtn
             // 
+            StartBtn.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
             StartBtn.CornerRoundingRadius = -1F;
             StartBtn.Location = new Point(12, 326);
             StartBtn.Name = "StartBtn";
@@ -238,6 +254,7 @@
             // 
             // StopBtn
             // 
+            StopBtn.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
             StopBtn.CornerRoundingRadius = -1F;
             StopBtn.Enabled = false;
             StopBtn.Location = new Point(356, 326);
@@ -252,6 +269,7 @@
             // 
             // ContinueBtn
             // 
+            ContinueBtn.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
             ContinueBtn.CornerRoundingRadius = -1F;
             ContinueBtn.Location = new Point(186, 326);
             ContinueBtn.Name = "ContinueBtn";
@@ -268,6 +286,7 @@
             AccountGridView.AllowUserToAddRows = false;
             AccountGridView.AllowUserToDeleteRows = false;
             AccountGridView.AllowUserToResizeRows = false;
+            AccountGridView.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             AccountGridView.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
             AccountGridView.ColumnHeadersHeight = 28;
             AccountGridView.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
@@ -327,6 +346,7 @@
             // 
             // ConfigAccountBtn
             // 
+            ConfigAccountBtn.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
             ConfigAccountBtn.CornerRoundingRadius = -1F;
             ConfigAccountBtn.Location = new Point(12, 279);
             ConfigAccountBtn.Name = "ConfigAccountBtn";
@@ -340,6 +360,7 @@
             // 
             // LoginThreadUpDown
             // 
+            LoginThreadUpDown.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
             LoginThreadUpDown.Location = new Point(221, 283);
             LoginThreadUpDown.Maximum = new decimal(new int[] { 10000000, 0, 0, 0 });
             LoginThreadUpDown.Minimum = new decimal(new int[] { 1, 0, 0, 0 });
@@ -351,6 +372,7 @@
             // 
             // kryptonLabel1
             // 
+            kryptonLabel1.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
             kryptonLabel1.Location = new Point(124, 285);
             kryptonLabel1.Name = "kryptonLabel1";
             kryptonLabel1.Size = new Size(91, 19);
@@ -386,7 +408,6 @@
             Controls.Add(kryptonLabel4);
             Controls.Add(kryptonLabel3);
             Icon = (Icon)resources.GetObject("$this.Icon");
-            MaximizeBox = false;
             Name = "FrmMain";
             Text = "Instagram Checker";
             ((System.ComponentModel.ISupportInitialize)AccountGridView).EndInit();

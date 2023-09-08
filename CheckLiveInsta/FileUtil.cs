@@ -1,4 +1,5 @@
-﻿using Serilog;
+﻿using Newtonsoft.Json;
+using Serilog;
 
 namespace CheckLiveInsta
 {
@@ -113,6 +114,14 @@ namespace CheckLiveInsta
                         Status = LoginStatus.None,
                         ErrorCount = 0,
                     };
+                    //if (data.Length == 3)
+                    //{
+                    //    account.Cookie = data[2];
+                    //    if (!string.IsNullOrWhiteSpace(account.Cookie))
+                    //    {
+                    //        account.Status = LoginStatus.HasCookie;
+                    //    }
+                    //}
                     accounts.Add(account);
                     line = reader.ReadLine();
                 }
@@ -155,6 +164,27 @@ namespace CheckLiveInsta
                 Log.Error($"Read data error {ex}");
             }
             return accounts;
+        }
+
+        public static void WriteData(DateTime session, List<Account> accounts)
+        {
+            try
+            {
+                var folder = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "logindata");
+                if (!Directory.Exists(folder)) Directory.CreateDirectory(folder);
+
+                using var writer = new StreamWriter(Path.Combine(folder, $"{session:dd-MM-yyyy.HH-mm-ss-fff}.txt"), false);
+                foreach (var acc in accounts)
+                {
+                    writer.WriteLine($"{acc.Username}|{acc.Password}|{JsonConvert.SerializeObject(acc.Headers)}");
+                }
+                writer.Flush();
+                writer.Close();
+            }
+            catch (Exception ex)
+            {
+                Log.Error($"Write data error {ex}");
+            }
         }
     }
 }

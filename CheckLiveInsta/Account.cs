@@ -41,7 +41,9 @@ namespace CheckLiveInsta
             }
         }
 
-        public Dictionary<string, string> Headers = new();
+        public Dictionary<string, string> Headers { get; set; } = new();
+
+        public string Cookie { get; set; } = string.Empty;
 
         public event PropertyChangedEventHandler? PropertyChanged;
 
@@ -55,6 +57,8 @@ namespace CheckLiveInsta
     {
         None = 0,
         Success = 1,
-        Failed = 2
+        Failed = 2,
+        Die = 3,
+        HasCookie = 4
     }
 }

@@ -107,7 +107,8 @@ namespace InstaChecker
                 var tasks = new List<Task>();
                 foreach (var account in _accounts)
                 {
-                    if (account.Status != LoginStatus.Success)
+                    if (token.IsCancellationRequested) break;
+                    if (account.Status != LoginStatus.Success && account.Status != LoginStatus.Die)
                     {
                         var task = Task.Run(() => InstaRequestService.LoginAndGetHeaders(account, token), token);
                         tasks.Add(task);
@@ -126,7 +127,7 @@ namespace InstaChecker
                     tasks.Clear();
                     ChromeDriverInstance.KillAllChromes();
                 }
-
+                //FileUtil.WriteData(_session, _accounts.Where(acc => acc.Status == LoginStatus.Success).ToList());
                 FileUtil.Init(_session);
                 for (int i = 0; i < (int)ThreadUpDown.Value; i++)
                 {
