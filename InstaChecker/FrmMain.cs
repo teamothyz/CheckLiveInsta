@@ -112,11 +112,10 @@ namespace InstaChecker
                     {
                         var task = Task.Run(() => InstaRequestService.LoginAndGetHeaders(account, token), token);
                         tasks.Add(task);
-                        if (tasks.Count == (int)LoginThreadUpDown.Value)
+                        if (tasks.Count(t => !t.IsCompleted) == (int)LoginThreadUpDown.Value)
                         {
-                            await Task.WhenAll(tasks);
-                            tasks.Clear();
-                            ChromeDriverInstance.KillAllChromes();
+                            await Task.Run(() => Task.WaitAny(tasks.ToArray()));
+                            tasks.RemoveAll(t => t.IsCompleted);
                         }
                     }
                 }
@@ -124,7 +123,6 @@ namespace InstaChecker
                 if (tasks.Any())
                 {
                     await Task.WhenAll(tasks);
-                    tasks.Clear();
                     ChromeDriverInstance.KillAllChromes();
                 }
                 //FileUtil.WriteData(_session, _accounts.Where(acc => acc.Status == LoginStatus.Success).ToList());

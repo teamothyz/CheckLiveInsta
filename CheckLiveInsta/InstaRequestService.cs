@@ -8,6 +8,8 @@ namespace CheckLiveInsta
 {
     public class InstaRequestService
     {
+        public static string Username { get; set; } = string.Empty;
+
         public static void LoginAndGetHeaders(Account account, CancellationToken token)
         {
             MyChromeDriver instace = null!;
@@ -18,7 +20,7 @@ namespace CheckLiveInsta
                 var networkManager = new NetWorkManagerCustom(instace.Driver);
                 networkManager.NetworkRequestSent += (sender, e) =>
                 {
-                    if (e.RequestUrl == $"https://www.instagram.com/api/v1/users/web_profile_info/?username=danghuong_73825")
+                    if (e.RequestUrl == $"https://www.instagram.com/api/v1/users/web_profile_info/?username={Username}")
                     {
                         account.Headers.Clear();
                         foreach (var header in e.RequestHeaders)
@@ -49,12 +51,13 @@ namespace CheckLiveInsta
                 instace.Driver.Click(@"#loginForm button[type=""submit""]", 60, token);
 
                 var endTimeLogin = DateTime.Now.AddMinutes(1);
+                var status = LoginStatus.Die;
                 while (DateTime.Now < endTimeLogin)
                 {
                     try
                     {
                         _ = instace.Driver.FindElement($@"img[alt*=""{account.Username.ToLower()}""]", 3, token);
-                        account.Status = LoginStatus.Success;
+                        status = LoginStatus.Success;
                         break;
                     }
                     catch
@@ -62,28 +65,32 @@ namespace CheckLiveInsta
                         try
                         {
                             _ = instace.Driver.FindElement("#loginForm > span > div", 3, token);
-                            account.Status = LoginStatus.Die;
+                            status = LoginStatus.Die;
                             break;
                         }
                         catch
                         {
                             if (instace.Driver.Url.Contains("accounts/suspended", StringComparison.OrdinalIgnoreCase))
                             {
-                                account.Status = LoginStatus.Die;
+                                status = LoginStatus.Die;
                                 break;
                             }
                         }
                     }
                 }
-
-                if (account.Status == LoginStatus.Success)
+                if (status == LoginStatus.Die)
+                {
+                    account.Status = status;
+                    return;
+                }
+                if (status == LoginStatus.Success)
                 {
                     networkManager.StartMonitoring().Wait(token);
-                    instace.Driver.GoToUrl("https://www.instagram.com/danghuong_73825");
+                    instace.Driver.GoToUrl($"https://www.instagram.com/{Username}");
                     var endTime = DateTime.Now.AddMinutes(1);
                     while (account.Status != LoginStatus.Success && DateTime.Now < endTime)
                     {
-                        Thread.Sleep(1000);
+                        Thread.Sleep(100);
                     }
                 }
                 if (account.Status == LoginStatus.Die || account.Status == LoginStatus.Success) return;

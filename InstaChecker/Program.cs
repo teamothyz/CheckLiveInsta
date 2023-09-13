@@ -1,3 +1,4 @@
+using CheckLiveInsta;
 using Microsoft.Extensions.Configuration;
 using Serilog;
 
@@ -8,9 +9,10 @@ namespace InstaChecker
         [STAThread]
         static void Main()
         {
+            var config = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build();
+            InstaRequestService.Username = config["Username"] ?? string.Empty;
             Log.Logger = new LoggerConfiguration()
-            .ReadFrom.Configuration(new ConfigurationBuilder()
-            .AddJsonFile("appsettings.json").Build())
+            .ReadFrom.Configuration(config)
             .Enrich.FromLogContext()
             .CreateLogger();
             ApplicationConfiguration.Initialize();
