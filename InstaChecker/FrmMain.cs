@@ -141,7 +141,7 @@ namespace InstaChecker
                                 if (_countCheck >= _checkingAccounts.Count) return;
                                 checkAccount = _checkingAccounts[_countCheck];
 
-                                account = _accounts.Where(a => a.CheckCount < 450 && a.Status == LoginStatus.Success).OrderBy(a => a.Username).FirstOrDefault();
+                                account = _accounts.Where(a => a.CheckCount < InstaRequestService.MaxCheck && a.Status == LoginStatus.Success).OrderBy(a => a.Username).FirstOrDefault();
                                 if (account != null) account.CheckCount++;
                                 else return;
 

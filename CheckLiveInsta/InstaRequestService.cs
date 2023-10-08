@@ -9,6 +9,7 @@ namespace CheckLiveInsta
     public class InstaRequestService
     {
         public static string Username { get; set; } = string.Empty;
+        public static int MaxCheck { get; set; } = 250;
 
         public static void LoginAndGetHeaders(Account account, CancellationToken token)
         {

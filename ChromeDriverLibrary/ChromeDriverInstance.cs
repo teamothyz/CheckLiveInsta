@@ -26,7 +26,6 @@ namespace ChromeDriverLibrary
             if (userDataDir == null)
             {
                 myDriver.ProfileDir = GetUserDir();
-                userDataDir ??= GetUserDir();
                 myDriver.IsDeleteProfile = isDeleteProfile;
             }
             else
